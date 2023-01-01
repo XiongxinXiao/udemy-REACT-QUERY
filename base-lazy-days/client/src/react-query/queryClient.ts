@@ -20,4 +20,12 @@ export const queryClient = new QueryClient({
   queryCache: new QueryCache({
     onError: queryErrorHandler,
   }),
+  defaultOptions: {
+    queries: {
+      staleTime: 600000,
+      cacheTime: 900000,
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+    },
+  },
 });

@@ -1,5 +1,5 @@
 import { useToast } from '@chakra-ui/react';
-import { useQuery } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 import type { Treatment } from '../../../../../shared/types';
 import { axiosInstance } from '../../../axiosInstance';
 import { queryKeys } from '../../../react-query/constants';
@@ -12,16 +12,12 @@ async function getTreatments(): Promise<Treatment[]> {
 }
 
 export function useTreatments(): Treatment[] {
-    const toast = useToast();
   const fallback = [];
-  const { data = fallback } = useQuery(queryKeys.treatments, getTreatments, {
-    onError: (error) => {
-      const title =
-        error instanceof Error
-          ? error.message
-          : 'error loading data from server';
-          toast({title, status: "error"})
-    },
-  });
+  const { data = fallback } = useQuery(queryKeys.treatments, getTreatments);
   return data;
+}
+
+export function usePrefetchTreatments() {
+  const queryClient = useQueryClient();
+  queryClient.prefetchQuery(queryKeys.treatments, getTreatments);
 }
