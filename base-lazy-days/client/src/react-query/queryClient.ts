@@ -11,24 +11,29 @@ function queryErrorHandler(error: unknown): void {
     error instanceof Error ? error.message : 'error connecting to server';
 
   // prevent duplicate toasts
-  // toast.closeAll();
+  toast.closeAll();
   toast({ title, status: 'error', variant: 'subtle', isClosable: true });
 }
 
+export function generateQueryClient(): QueryClient {
+    return new QueryClient({
+        queryCache: new QueryCache({
+          onError: queryErrorHandler,
+        }),
+        defaultOptions: {
+          queries: {
+            staleTime: 600000,
+            cacheTime: 900000,
+            refetchOnMount: false,
+            refetchOnReconnect: false,
+            refetchOnWindowFocus: false,
+          },
+          mutations: {
+              onError: queryErrorHandler
+          }
+        },
+      });
+}
+
 // to satisfy typescript until this file has uncommented contents
-export const queryClient = new QueryClient({
-  queryCache: new QueryCache({
-    onError: queryErrorHandler,
-  }),
-  defaultOptions: {
-    queries: {
-      staleTime: 600000,
-      cacheTime: 900000,
-      refetchOnMount: false,
-      refetchOnWindowFocus: false,
-    },
-    mutations: {
-        onError: queryErrorHandler
-    }
-  },
-});
+export const queryClient = generateQueryClient();
